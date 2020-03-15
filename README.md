@@ -1,7 +1,13 @@
-# Intelligent-tree-select
+# Intelligent-DAG-Select
 
-React tree select component  based on [react-select](https://github.com/JedWatson/react-select#react-select)
+React DAG select component based on [intelligent-tree-select](https://github.com/lecbyjak/intelligent-tree-select)
+which is based on [react-select](https://github.com/JedWatson/react-select#react-select)
 and [react-virtualized-select](https://github.com/bvaughn/react-virtualized-select#react-virtualized-select)
+
+Intelligent-DAG-Select is a modified version of intelligent-tree-select that
+uses DAG as input data and renders it as a tree.
+Thus, some subtrees may occur multiple times in the tree.
+
 
 #### Before start
 
@@ -10,14 +16,14 @@ Before you can use this component you will need [Node.js](https://nodejs.org/en/
 ### Getting started
 Easiest way is to install via NPM
 ```
-npm install intelligent-tree-select --save
+npm install intelligent-dag-select --save
 ```
 
 Then import it
 ```
-import { VirtualizedTreeSelect } from 'intelligent-tree-select'
-import { IntelligentTreeSelect } from 'intelligent-tree-select'
-import "intelligent-tree-select/lib/styles.css"
+import { VirtualizedTreeSelect } from 'intelligent-dag-select'
+import { IntelligentTreeSelect } from 'intelligent-dag-select'
+import "intelligent-dag-select/lib/styles.css"
 import 'bootstrap/dist/css/bootstrap.css';
 ```
 
