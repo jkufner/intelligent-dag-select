@@ -1,13 +1,13 @@
 {
   "author": {
-    "name": "Jakub Lečbych"
+    "name": "Josef Kufner"
   },
-  "description": "React tree select component  based on [react-select](https://github.com/JedWatson/react-select#react-select)\r and [react-virtualized-select](https://github.com/bvaughn/react-virtualized-select#react-virtualized-select)",
+  "description": "React DAG select component based on [intelligent-tree-select](https://github.com/lecbyjak/intelligent-tree-select) which is based on [react-select](https://github.com/JedWatson/react-select#react-select) and [react-virtualized-select](https://github.com/bvaughn/react-virtualized-select#react-virtualized-select)",
   "version": "0.7.1",
   "bugs": {
-    "url": "https://github.com/lecbyjak/intelligent-tree-select/issues"
+    "url": "https://github.com/jkufner/intelligent-dag-select/issues"
   },
-  "homepage": "https://github.com/lecbyjak/intelligent-tree-select#readme",
+  "homepage": "https://github.com/jkufner/intelligent-dag-select#readme",
   "keywords": [
     "combobox",
     "form",
@@ -23,7 +23,7 @@
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lecbyjak/intelligent-tree-select.git"
+    "url": "git+https://github.com/jkufner/intelligent-dag-select.git"
   },
   "main": "lib/index.js",
   "dependencies": {
