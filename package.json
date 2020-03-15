@@ -19,7 +19,7 @@
     "ui"
   ],
   "license": "MIT",
-  "name": "intelligent-tree-select",
+  "name": "intelligent-dag-select",
   "private": false,
   "repository": {
     "type": "git",
