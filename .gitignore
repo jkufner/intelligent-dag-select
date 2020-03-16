@@ -1,3 +1,6 @@
+lib/
+examples/demo.js
+examples/index.html
 
 .git
 .npmrc
