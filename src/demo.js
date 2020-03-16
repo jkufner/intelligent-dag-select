@@ -1,36 +1,55 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import data from '../examples/data/data.json'
 import {IntelligentTreeSelect} from './components/IntelligentTreeSelect';
 import './styles.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
+function generateItem(optionID, label, childrenSuffixes) {
+  let children = childrenSuffixes.map((suffix) => optionID + suffix);
+  // Non-tree extras
+  children.push("http://example.com/a/a/a");
+  children.push("http://example.com/b/b/b");
+  return {
+    "@id": optionID,
+    "#label": label + " (" + optionID + ")",
+    "subTerm": children,
+  };
+}
+
+function dataGenerator({searchString, optionID, limit, offset}) {
+  console.group("Data Generator:", {searchString, optionID, limit, offset});
+  if (!optionID) {
+    optionID = "http://example.com/";
+  }
+  return new Promise((resolve) => {
+    const childrenSuffixes = [
+      "/a",
+      "/b",
+      "/c",
+      "/d",
+      "/e",
+      "/f",
+    ];
+    let items = childrenSuffixes.map((ch) => generateItem(optionID.replace(/\/$/, '') + ch, optionID.replace(/^([^/]*\/){3}/, '') + ch, childrenSuffixes));
+    console.log("Items: ", items);
+    console.groupEnd();
+    resolve(items);
+  });
+}
 
 ReactDOM.render(
   <IntelligentTreeSelect
-        //name={"main_search"}
-        fetchOptions={({searchString, optionID, limit, offset}) => new Promise((resolve) => {
-          //console.log({searchString, optionID, limit, offset});
-          setTimeout(resolve, 1000, [
-            {
-              "@id": "http://onto.fel.cvut.cz/ontologies/eccairs/aviation-3.4.0.2/vl-a-390/v-3000000",
-              "http://www.w3.org/2000/01/rdf-schema#label": "3000000 - Consequential Events new",
-              "http://www.w3.org/2000/01/rdf-schema#comment": "An event evolving from another event.",
-              "subTerm": [
-                "http://onto.fel.cvut.cz/ontologies/eccairs/aviation-3.4.0.2/vl-a-390/v-99010132"
-              ]
-            },
-          ])
-        })}
+        fetchOptions={dataGenerator}
         valueKey={"@id"}
-        labelKey={"http://www.w3.org/2000/01/rdf-schema#label"}
+        labelKey={"#label"}
         childrenKey={"subTerm"}
         simpleTreeData={true}
         isMenuOpen={true}
-        options={data}
+        options={[]}
         displayInfoOnHover={true}
         onOptionCreate={(option) => {console.log('created', option)}}
+        maxHeight={0.66 * window.screen.height}
   />,
   document.getElementById('app')
 );
