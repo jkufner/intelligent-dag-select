@@ -93,7 +93,7 @@ class IntelligentTreeSelect extends Component {
     } else {
       this.setState({options: []}, () => {
         // Reset options from props
-        this._addNewOptions(this.props.options);
+        this._addNewOptions(this._processData(this.props.options));
       });
     }
   }
@@ -102,7 +102,7 @@ class IntelligentTreeSelect extends Component {
     if (this.props.options && prevProps.options.length !== this.props.options.length) {
       this.setState({options: []}, () => {
         // Reset options from props
-        this._addNewOptions(this.props.options);
+        this._addNewOptions(this._processData(this.props.options));
       });
     }
   }
@@ -212,9 +212,7 @@ class IntelligentTreeSelect extends Component {
 
         //TODO figure out how to get all parents for matching node
         this.fetching = this._getResponse(searchString, '', this.props.fetchLimit, offset).then(response => {
-
             const data = this._processData(response);
-
             this._addToHistory(searchString, Date.now() + this._getValidForInSec(this.props.optionLifetime));
             this.fetching = false;
             this._addNewOptions(data);
@@ -368,7 +366,7 @@ class IntelligentTreeSelect extends Component {
     if (option.parent) {
       this._addChildrenToParent(option[this.props.valueKey], option.parent);
     }
-    this._addNewOptions([option]);
+    this._addNewOptions(_this._processData([option]));
 
     if ('onOptionCreate' in this.props) {
       this.props.onOptionCreate(option);
