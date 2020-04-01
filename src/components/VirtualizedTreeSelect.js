@@ -82,8 +82,19 @@ class VirtualizedTreeSelect extends Component {
     return sortedArr;
   }
 
-  _optionRenderer({focusedOption, focusOption, key, option, labelKey, selectValue, optionStyle, valueArray}) {
+  _optionLabelRenderer(option, labelKey) {
+    return <Highlighter
+      highlightClassName='highlighted'
+      searchWords={[this.searchString]}
+      autoEscape={false}
+      textToHighlight={option[labelKey]}
+      highlightTag={"span"}
+    />;
 
+  }
+
+  _optionRenderer(args) {
+    const {focusedOption, focusOption, key, option, labelKey, selectValue, optionStyle, valueArray} = args;
     const className = ['VirtualizedSelectOption'];
 
     if (option === focusedOption) {
@@ -113,13 +124,9 @@ class VirtualizedTreeSelect extends Component {
            onClick={events.onClick}
            key={key}>
 
-        <Highlighter
-          highlightClassName='highlighted'
-          searchWords={[this.searchString]}
-          autoEscape={false}
-          textToHighlight={option[labelKey]}
-          highlightTag={"span"}
-        />
+        {this.props.optionInnerRenderer
+          ? this.props.optionInnerRenderer(option, this._optionLabelRenderer(option, labelKey), args, this.props)
+          : this._optionLabelRenderer(option, labelKey)}
 
       </div>
     )
@@ -127,7 +134,7 @@ class VirtualizedTreeSelect extends Component {
 
   // See https://github.com/JedWatson/react-select/#effeciently-rendering-large-lists-with-windowing
   _renderMenu({focusedOption, focusOption, labelKey, onSelect, options, selectValue, valueArray, valueKey}) {
-    const {listProps, optionRenderer, childrenKey, optionLeftOffset, renderAsTree} = this.props;
+    const {listProps, optionRenderer, childrenKey, optionLeftOffset, optionLeftOffsetUnit, renderAsTree} = this.props;
     const focusedOptionIndex = options.indexOf(focusedOption);
     const height = this._calculateListHeight({options});
     const innerRowRenderer = optionRenderer || this._optionRenderer;
@@ -135,10 +142,10 @@ class VirtualizedTreeSelect extends Component {
     function wrappedRowRenderer({index, key, style}) {
       const option = options[index];
       let leftOffset = 0;
-      if (renderAsTree) leftOffset = option.depth * optionLeftOffset;
+      if (renderAsTree) leftOffset = (option.depth * optionLeftOffset) + optionLeftOffsetUnit;
       const optionStyle = {
         ...style,
-        left: leftOffset
+        paddingLeft: leftOffset
       };
 
       return innerRowRenderer({
@@ -335,7 +342,9 @@ VirtualizedTreeSelect.propTypes = {
   onInputChange: PropTypes.func,
   optionHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
   optionLeftOffset: PropTypes.number,
+  optionLeftOffsetUnit: PropTypes.string,
   optionRenderer: PropTypes.func,
+  optionInnerRenderer: PropTypes.func,
   options: PropTypes.array,
   renderAsTree: PropTypes.bool,
   valueKey: PropTypes.string
@@ -345,7 +354,8 @@ VirtualizedTreeSelect.defaultProps = {
   childrenKey: 'children',
   options: [],
   optionHeight: 25,
-  optionLeftOffset: 16,
+  optionLeftOffset: 2,
+  optionLeftOffsetUnit: 'em',
   expanded: false,
   isMenuOpen: false,
   maxHeight: 300,

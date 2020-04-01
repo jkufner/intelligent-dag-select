@@ -1,24 +1,97 @@
 body {
   padding: 2em;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-.result-item{
+
+* {
+  box-sizing: border-box;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 1rem 0em 1rem 0em;
+}
+
+p {
+  margin: 1em 0em;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+}
+
+section {
+  flex-grow: 1;
+  margin: 1em;
+}
+
+footer {
+  margin-top: auto;
+  text-align: center;
+}
+
+@media (max-width: 50em) {
+  main {
+    flex-direction: column;
+  }
+}
+
+.result-item {
   padding-left: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
 }
+
+.VirtualizedSelectOption {
+  white-space: nowrap;
+}
+
+.VirtualizedSelectOption {
+  display: flex;
+}
+
+.VirtualizedSelectOption span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .VirtualizedTreeSelectTooltip{
   max-width: 300px;
   text-align: start;
   word-break: break-all;
 }
 
-.toggleButton{
+span.toggleButton{
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+}
+
+button.toggleButton {
+  display: inline;
+  vertical-align: baseline;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+button.toggleButton svg {
+  display: inline;
+  width: 1em;
+  height: 1em;
+  margin: 0em 0.5em;
 }
 
 .Select.is-invalid ~ .invalid-feedback {

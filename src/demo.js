@@ -1,57 +1,136 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import {IntelligentTreeSelect} from './components/IntelligentTreeSelect';
-import './styles.css';
+import DagSelect from "./components/DagSelect";
+import TreeSelect from "./components/TreeSelect";
+
 import 'bootstrap/dist/css/bootstrap.css';
+import './styles.css';
+
 
 function generateItem(optionID, label, childrenSuffixes) {
   let children = childrenSuffixes.map((suffix) => optionID + suffix);
   // Non-tree extras
-  children.push("http://example.com/a/a/a");
-  children.push("http://example.com/b/b/b");
+  children.push("/a/a/a");
+  children.push("/b/b/b");
   return {
     "@id": optionID,
-    "#label": label + " (" + optionID + ")",
+    "#label": label,
     "subTerm": children,
   };
 }
 
-function dataGenerator({searchString, optionID, limit, offset}) {
-  console.group("Data Generator:", {searchString, optionID, limit, offset});
-  if (!optionID) {
-    optionID = "http://example.com/";
-  }
+function generateItems(optionID) {
+  const childrenSuffixes = [
+    "a/",
+    "b/",
+    "c/",
+    "d/",
+    "e/",
+    "f/",
+  ];
+  return childrenSuffixes.map((ch) => generateItem(optionID + ch, optionID + ch, childrenSuffixes));
+}
+
+function generateFlatItems(optionID) {
+  const children = ["a", "b", "c", "d", "e", "f"];
+  return children.map((ch) => ({
+    "@id": ch,
+    "#label": ch,
+    "subTerm": children,
+  }));
+}
+
+// Highly sophisticated communication interface
+function echo(value, delayTime) {
   return new Promise((resolve) => {
-    const childrenSuffixes = [
-      "/a",
-      "/b",
-      "/c",
-      "/d",
-      "/e",
-      "/f",
-    ];
-    let items = childrenSuffixes.map((ch) => generateItem(optionID.replace(/\/$/, '') + ch, optionID.replace(/^([^/]*\/){3}/, '') + ch, childrenSuffixes));
-    console.log("Items: ", items);
-    console.groupEnd();
-    resolve(items);
+    setTimeout(() => resolve(value), delayTime)
   });
 }
 
-ReactDOM.render(
-  <IntelligentTreeSelect
-        fetchOptions={dataGenerator}
+function dumpItems(parentID, parentOption, items) {
+  console.groupCollapsed("Loading options for option %o", parentID);
+  console.log("Parent option:", parentOption);
+  console.log("Loaded items and their children:\n" + items.map(i => " » " + i["@id"] + "\n"
+    + i.subTerm.map(s => "    → " + s).join("\n") + "\n").join("\n"));
+  console.groupEnd();
+}
+
+function loadTreeOptions(parentOption) {
+  const parentID = parentOption ? parentOption['@id'] : "/";
+  let items = generateItems(parentID);
+  dumpItems(parentID, parentOption, items);
+  return echo(items, parentOption ? 250 : 100); // Do AJAX here
+}
+
+function loadFlatOptions(parentOption) {
+  const parentID = parentOption ? parentOption['@id'] : "/";
+  let items = generateFlatItems(parentID);
+  dumpItems(parentID, parentOption, items);
+  return echo(items, parentOption ? 250 : 100); // Do AJAX here
+}
+
+
+class TreeDemo extends React.Component {
+  render() {
+    const selectedOption = this.state && this.state.selectedOption;
+    return <section>
+      <h2>Tree Select</h2>
+      <p>Each node has children of unique IDs.</p>
+      <TreeSelect
         valueKey={"@id"}
         labelKey={"#label"}
         childrenKey={"subTerm"}
-        simpleTreeData={true}
         isMenuOpen={true}
-        options={[]}
-        displayInfoOnHover={true}
-        onOptionCreate={(option) => {console.log('created', option)}}
-        maxHeight={0.66 * window.screen.height}
-  />,
+        expanded={false}
+        maxHeight={0.6 * window.screen.height}
+        loadOptions={loadTreeOptions}
+        onChange={opt => {
+          console.log("Selected option:", opt);
+          this.setState({selectedOption: opt["@id"]})
+        }}
+      />
+      <p>Selected option: <code>{selectedOption}</code></p>
+    </section>;
+  }
+}
+
+
+class DagDemo extends React.Component {
+  render() {
+    const selectedOption = this.state && this.state.selectedOption;
+    return <section>
+      <h2>DAG Select</h2>
+      <p>The nodes have identical sets of children.</p>
+      <DagSelect
+        valueKey={"@id"}
+        labelKey={"#label"}
+        childrenKey={"subTerm"}
+        isMenuOpen={true}
+        expanded={false}
+        maxHeight={0.6 * window.screen.height}
+        loadOptions={loadFlatOptions}
+        onChange={opt => {
+          console.log("Selected option:", opt);
+          this.setState({selectedOption: opt["@id"]})
+        }}
+      />
+      <p>Selected option: <code>{selectedOption}</code></p>
+    </section>;
+  }
+}
+
+ReactDOM.render(
+  <React.Fragment>
+    <main>
+      <TreeDemo/>
+      <DagDemo/>
+    </main>
+    <footer><b>Tip:</b> Check the console.</footer>
+  </React.Fragment>
+  ,
   document.getElementById('app')
-);
+)
+;
 
 
