@@ -21,13 +21,20 @@ npm install intelligent-dag-select --save
 
 Then import it
 ```
-import { VirtualizedTreeSelect } from 'intelligent-dag-select'
-import { IntelligentTreeSelect } from 'intelligent-dag-select'
-import "intelligent-dag-select/lib/styles.css"
+import { DagSelect } from 'intelligent-dag-select'
+import { TreeSelect } from 'intelligent-dag-select'
 import 'bootstrap/dist/css/bootstrap.css';
+import "intelligent-dag-select/lib/styles.css"
 ```
 
 example of the usage in the `src/demo.js`
+
+### Components
+
+- `VirtualizedTreeSelect` provides a list select.
+- `ExpandableTreeSelect` adds an expand button to each item in the list.
+- `TreeSelect` adds an option to load data using the `loadOptions` function, that returns either a list of new items or a Promise of the new items.
+- `DagSelect` adds a "DAG to Tree" conversion adding items to the list so that it can handle duplicate items and cycles.
 
 ### Virtualized tree select Props
 
