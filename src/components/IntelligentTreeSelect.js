@@ -36,42 +36,42 @@ class IntelligentTreeSelect extends Component {
   componentDidMount() {
     let data = [];
     if (this.props.name && this.props.fetchOptions) {
-      data = this._retrieveCachedData(this.props.name);
+      data = this._retrieveCachedData();
     }
 
     if (data.length === 0) {
-      data = this._processData(this.props.options);
+      data = this.props.options;
+    }
+
+    if (!this.props.simpleTreeData) {
+      data = this._simplifyData(this.props.options);
     }
 
     this._addNewOptions(data);
     this._loadOptions();
   }
 
-  _retrieveCachedData(name) {
-    let cachedData = window.localStorage.getItem(name);
+  _retrieveCachedData() {
+    let cachedData = window.localStorage.getItem(this.props.name);
     if (cachedData) {
       cachedData = JSON.parse(cachedData);
       return cachedData.validTo > Date.now() ? cachedData.data : [];
     }
   }
 
-  _storeDataToCache(name, data) {
-    window.localStorage.setItem(name,
-      JSON.stringify(
-        {
-          validTo: Date.now() + this._getValidForInSec(this.props.optionLifetime),
-          data: options,
-        },
-      ),
-    );
-  }
-
   _loadOptions() {
     if (this.state.options.length === 0 && this.props.fetchOptions) {
       if (!this.fetching) {
         this.setState({isLoadingExternally: true});
+        let data = [];
+
         this.fetching = this._getResponse('', '', this.props.fetchLimit, 0).then(response => {
-            const data = this._processData(response);
+
+            if (!this.props.simpleTreeData) {
+              data = this._simplifyData(response);
+            } else {
+              data = response;
+            }
             this.fetching = false;
             this._addNewOptions(data);
             this.setState({isLoadingExternally: false});
@@ -93,7 +93,7 @@ class IntelligentTreeSelect extends Component {
     } else {
       this.setState({options: []}, () => {
         // Reset options from props
-        this._addNewOptions(this._processData(this.props.options));
+        this._addNewOptions(this.props.options);
       });
     }
   }
@@ -102,7 +102,7 @@ class IntelligentTreeSelect extends Component {
     if (this.props.options && prevProps.options.length !== this.props.options.length) {
       this.setState({options: []}, () => {
         // Reset options from props
-        this._addNewOptions(this._processData(this.props.options));
+        this._addNewOptions(this.props.options);
       });
     }
   }
@@ -118,13 +118,6 @@ class IntelligentTreeSelect extends Component {
       }
     }
     return false;
-  }
-
-  _processData(data) {
-    if (!this.props.simpleTreeData) {
-      data = this._simplifyData(data);
-    }
-    return data;
   }
 
   _simplifyData(responseData) {
@@ -212,7 +205,13 @@ class IntelligentTreeSelect extends Component {
 
         //TODO figure out how to get all parents for matching node
         this.fetching = this._getResponse(searchString, '', this.props.fetchLimit, offset).then(response => {
-            const data = this._processData(response);
+
+            if (!this.props.simpleTreeData) {
+              data = this._simplifyData(response);
+            } else {
+              data = response;
+            }
+
             this._addToHistory(searchString, Date.now() + this._getValidForInSec(this.props.optionLifetime));
             this.fetching = false;
             this._addNewOptions(data);
@@ -260,7 +259,12 @@ class IntelligentTreeSelect extends Component {
         //fetch child options that are not completed
         this.fetching = this._getResponse('', topOption.parent, this.props.fetchLimit, offset, topOption).then(response => {
 
-          const data = this._processData(response);
+          if (!this.props.simpleTreeData) {
+            data = this._simplifyData(response);
+          } else {
+            data = response;
+          }
+
 
           if (data.length < this.props.fetchLimit) {
             //fetch parent options
@@ -284,9 +288,15 @@ class IntelligentTreeSelect extends Component {
       if (!dataCached) {
         this.setState({isLoadingExternally: true});
         option.fetchingChild = true;
+        let data = [];
 
         this._getResponse('', option[this.props.valueKey], this.props.fetchLimit, 0, option).then(response => {
-            const data = this._processData(response);
+
+            if (!this.props.simpleTreeData) {
+              data = this._simplifyData(response);
+            } else {
+              data = response;
+            }
 
             if (data.length < this.props.fetchLimit) {
               this.completedNodes[option[this.props.valueKey]] = true
@@ -366,7 +376,7 @@ class IntelligentTreeSelect extends Component {
     if (option.parent) {
       this._addChildrenToParent(option[this.props.valueKey], option.parent);
     }
-    this._addNewOptions(_this._processData([option]));
+    this._addNewOptions([option]);
 
     if ('onOptionCreate' in this.props) {
       this.props.onOptionCreate(option);
@@ -405,7 +415,14 @@ class IntelligentTreeSelect extends Component {
     }
 
     if (name && fetchOptions) {
-      this._storeDataToCache(name, options);
+      window.localStorage.setItem(name,
+        JSON.stringify(
+          {
+            validTo: Date.now() + this._getValidForInSec(this.props.optionLifetime),
+            data: options,
+          },
+        ),
+      );
     }
 
     this.setState({options: mergedArr, update: ++this.state.update});
