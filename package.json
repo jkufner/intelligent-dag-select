@@ -3,7 +3,7 @@
     "name": "Josef Kufner"
   },
   "description": "React DAG select component based on [intelligent-tree-select](https://github.com/lecbyjak/intelligent-tree-select) which is based on [react-select](https://github.com/JedWatson/react-select#react-select) and [react-virtualized-select](https://github.com/bvaughn/react-virtualized-select#react-virtualized-select)",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "bugs": {
     "url": "https://github.com/jkufner/intelligent-dag-select/issues"
   },
