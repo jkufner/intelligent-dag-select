@@ -33,7 +33,7 @@ example of the usage in the `src/demo.js`
 
 - `VirtualizedTreeSelect` provides a list select.
 - `ExpandableTreeSelect` adds an expand button to each item in the list.
-- `TreeSelect` adds an option to load data using the `loadOptions` function, that returns either a list of new items or a Promise of the new items.
+- `TreeSelect` adds an option to load data using the `fetchOptions` function, that returns either a list of new items or a Promise of the new items.
 - `DagSelect` adds a "DAG to Tree" conversion adding items to the list so that it can handle duplicate items and cycles.
 
 ### Virtualized tree select Props

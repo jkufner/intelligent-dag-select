@@ -1,3 +1,6 @@
-export {IntelligentTreeSelect} from '../lib/components/IntelligentTreeSelect';
-export { VirtualizedTreeSelect } from '../lib/components/VirtualizedTreeSelect';
-export {ToggleMinusIcon, TogglePlusIcon} from "../lib/components/Icons";
+export {IntelligentDagSelect} from './components/IntelligentDagSelect';
+export {DagSelect} from './components/DagSelect';
+export {TreeSelect} from './components/TreeSelect';
+export {ExpandableTreeSelect} from './components/ExpandableTreeSelect';
+export {VirtualizedTreeSelect} from './components/VirtualizedTreeSelect';
+export {ToggleMinusIcon, TogglePlusIcon} from "./components/Icons";

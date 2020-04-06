@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import DagSelect from "./components/DagSelect";
-import TreeSelect from "./components/TreeSelect";
+import {DagSelect} from "./components/DagSelect";
+import {TreeSelect} from "./components/TreeSelect";
 
 import 'bootstrap/dist/css/bootstrap.css';
 import './styles.css';

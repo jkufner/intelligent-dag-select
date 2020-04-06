@@ -118,6 +118,8 @@ class VirtualizedTreeSelect extends Component {
       onMouseEnter: () => focusOption(option),
     };
 
+    const label = this._optionLabelRenderer(option, labelKey);
+
     return (
       <div style={optionStyle} className={className.join(' ')}
            onMouseEnter={events.onMouseEnter}
@@ -125,8 +127,8 @@ class VirtualizedTreeSelect extends Component {
            key={key}>
 
         {this.props.optionInnerRenderer
-          ? this.props.optionInnerRenderer(option, this._optionLabelRenderer(option, labelKey), args, this.props)
-          : this._optionLabelRenderer(option, labelKey)}
+          ? this.props.optionInnerRenderer(option, label, args)
+          : label}
 
       </div>
     )

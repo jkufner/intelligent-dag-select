@@ -1,8 +1,9 @@
 import React from 'react';
-import TreeSelect from "./TreeSelect";
+import {TreeSelect} from "./TreeSelect";
 
-export default class DagSelect extends TreeSelect {
+export class DagSelect extends TreeSelect {
 
+  // TODO: Instead of overriging the method, we should provide an option to pass the mapping function
   _processNewOptions(parentOption, newOptions) {
     const {valueKey, labelKey, childrenKey} = this.props;
     const pId = parentOption ? parentOption.value : "";

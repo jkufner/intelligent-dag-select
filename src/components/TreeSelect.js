@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
-import ExpandableTreeSelect from "./ExpandableTreeSelect";
+import {ExpandableTreeSelect} from "./ExpandableTreeSelect";
 import {VirtualizedTreeSelect} from "./VirtualizedTreeSelect";
 
-export default class TreeSelect extends Component {
+export class TreeSelect extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -15,10 +14,10 @@ export default class TreeSelect extends Component {
   }
 
   _loadOptions(parentOption) {
-    if (!this.props.loadOptions) {
+    if (!this.props.fetchOptions) {
       return;
     }
-    const newOpts = this.props.loadOptions(parentOption ? parentOption.option : undefined);
+    const newOpts = this.props.fetchOptions(parentOption ? parentOption.option : undefined);
     if (newOpts instanceof Promise) {
       newOpts.then(no => this._addNewOptions(this._processNewOptions(parentOption, no)));
     } else {
@@ -70,10 +69,10 @@ export default class TreeSelect extends Component {
 
 TreeSelect.propTypes = {
   ...VirtualizedTreeSelect.propTypes, // We don't want to export the expand mechanism of ExpandableTreeSelect.
-  loadOptions: PropTypes.func,  // Returns list of new options or a Promise of the new options
+  fetchOptions: PropTypes.func,  // Returns list of new options or a Promise of the new options
 };
 
 TreeSelect.defaultProps = {
   ...VirtualizedTreeSelect.defaultProps,
-  loadOptions: undefined,
+  fetchOptions: undefined,
 };

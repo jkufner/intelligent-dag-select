@@ -37,11 +37,13 @@ class ResultItem extends Component {
 
         return <div style={this.props.style} className={this.props.className} onMouseEnter={this.props.onMouseEnter} >
 
-                {this.props.settings.renderAsTree &&
+          {this.props.widgets.expandButton !== undefined
+            ? this.props.widgets.expandButton
+            : (this.props.settings.renderAsTree &&
                     <div style={{width: '16px'}}>
                         {button}
                     </div>
-                }
+            )}
 
                 <TooltipItem id={"tooltip-" + ResultItem._getHash(value)}
                              option={option}
@@ -53,11 +55,13 @@ class ResultItem extends Component {
                              tooltipKey={this.props.tooltipKey}
                 />
 
-              {option.fetchingChild &&
+          {this.props.widgets.busyIndicator !== undefined
+            ? this.props.widgets.busyIndicator
+            : (option.fetchingChild &&
               <span className="Select-loading-zone" aria-hidden="true" style={{'paddingLeft': '5px'}}>
                 <span className="Select-loading" />
               </span>
-              }
+            )}
             </div>;
     }
 }

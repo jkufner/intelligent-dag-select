@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import {VirtualizedTreeSelect} from "./VirtualizedTreeSelect";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import {ToggleMinusIcon, TogglePlusIcon} from "./Icons";
 
-export default class ExpandableTreeSelect extends Component {
+export class ExpandableTreeSelect extends Component {
 
-  onExpandButton(option, addOptions) {
+  onExpandButton(option) {
     // FIXME: This is very ugly; we should update the VirtualizedTreeSelect's state properly.
     if (option.expanded) {
       option.expanded = false;
@@ -32,27 +31,46 @@ export default class ExpandableTreeSelect extends Component {
     this.forceUpdate();
   }
 
-  optionInnerRenderer(option, label, args, props, addOptions) {
-    if (option[props.childrenKey].length === 0) {
-      return label;
+  _optionInnerRenderer(option, label, vtsOptionRendererArgs) {
+    const widgets = this._optionWidgetsRenderer({label}, option);
+    if (this.props.optionRenderer) {
+      return this.props.optionRenderer(option, widgets, vtsOptionRendererArgs);
     } else {
-      return <React.Fragment>
-        <button className="toggleButton" onClick={() => this.onExpandButton(option, addOptions)}>
-          {option.expanded ? <ToggleMinusIcon/> : <TogglePlusIcon/>}
-        </button>
-        {label}
-        {option.expanding ?
-          <span className="Select-loading-zone" aria-hidden="true"
-                style={{paddingLeft: '0.5em', width: '2em', display: 'inline'}}>
-            <span className="Select-loading"/>
-          </span> : undefined}
-      </React.Fragment>;
+      return this._optionDefaultInnerRenderer(option, widgets);
     }
+  }
+
+  _optionDefaultInnerRenderer(option, widgets) {
+    return <React.Fragment>
+      {widgets.expandButton}
+      {widgets.label}
+      {widgets.busyIndicator}
+    </React.Fragment>;
+  }
+
+  _optionWidgetsRenderer(widgets, option) {
+    if (option.children.length === 0) {
+      widgets.expandButton = null;
+    } else {
+      widgets.expandButton = <button className="toggleButton" onClick={() => this.onExpandButton(option)}>
+          {option.expanded ? <ToggleMinusIcon/> : <TogglePlusIcon/>}
+        </button>;
+    }
+
+    if (option.expanding) {
+      widgets.busyIndicator = <span className="Select-loading-zone" aria-hidden="true" style={{paddingLeft: '0.5em', width: '2em', display: 'inline'}}>
+          <span className="Select-loading"/>
+        </span>;
+    } else {
+      widgets.busyIndicator = null;
+    }
+
+    return widgets;
   }
 
   render() {
     return <VirtualizedTreeSelect
-      optionInnerRenderer={(...args) => this.optionInnerRenderer(...args)}
+      optionInnerRenderer={(option, label, args) => this._optionInnerRenderer(option, label, args)}
       {...this.props}
     />
   }
@@ -61,9 +79,11 @@ export default class ExpandableTreeSelect extends Component {
 ExpandableTreeSelect.propTypes = {
   ...VirtualizedTreeSelect.propTypes,
   onFirstExpand: PropTypes.func,  // May return a promise that will trigger a bussy indicator
+  optionRenderer: PropTypes.func,
 };
 
 ExpandableTreeSelect.defaultProps = {
   ...VirtualizedTreeSelect.defaultProps,
   onFirstExpand: undefined,
+  optionRenderer: undefined,
 };
