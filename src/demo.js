@@ -84,7 +84,7 @@ class TreeDemo extends React.Component {
         isMenuOpen={true}
         expanded={false}
         maxHeight={0.6 * window.screen.height}
-        loadOptions={loadTreeOptions}
+        fetchOptions={loadTreeOptions}
         onChange={opt => {
           console.log("Selected option:", opt);
           this.setState({selectedOption: opt["@id"]})
@@ -109,7 +109,7 @@ class DagDemo extends React.Component {
         isMenuOpen={true}
         expanded={false}
         maxHeight={0.6 * window.screen.height}
-        loadOptions={loadFlatOptions}
+        fetchOptions={loadFlatOptions}
         onChange={opt => {
           console.log("Selected option:", opt);
           this.setState({selectedOption: opt["@id"]})
